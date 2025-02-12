@@ -1,0 +1,256 @@
+<!-- First step make player body follow player off screen test it with the vr on -->
+<!-- Step 2 make hands follow the player-->
+<!-- Step 3 make hands disapear if the player uses wasd, persist if the they are using vr-->
+
+<!-- Step 4 Create Low fidelity garden-->
+<!-- Step 5 Add Hell yeah sword -->
+ <!-- later step, figure out how to host website using ngrok-->
+
+<!-- Step X1 make camera work by looking around without holding mouse 1-->
+ <!--Step X2 make looking around  -->
+
+<!-- Y1 make sword childable-->
+ <!-- play music when sword is picked up-->
+<!-- Y2 move sword to bottom left side of screen-->
+ <!-- Y3 holding Shift brings sword to inventory mode-->
+
+ <!-- Z1 make cigarettes smokeable-->
+  <!-- Z2 make it so that when players click on pack when the sword is in inventory mode, a new cigarette is instantiated-->
+ <!-- Z3 Make cigarettes stick in mouth-->
+  <!-- Z4 Cigarettes have plums of smoke when instantiated-->
+
+
+<html>
+    <head>
+        <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+        <script src="scripts/playerBody.js"></script>
+        <script src="scripts/circles-sphere-env-map.js"></script>
+        
+    </head>
+    <body>
+        <a-scene>
+            <!-- all preloaded assets -->
+            <a-assets>
+                <!--poorly optimized model.. I think it may have 100 different texture maps on it not gonna change it at this point though cause it'll take too much time.
+                Good thing there's only one sword and not two of them, Imagine how horrible that might be lol.
+                all of these extra textures come from the 20 or so cigarettes in the pack, around 5 maps per texture-->
+                <a-assets-item id="HYS_model" src="models/hellyeahsword.glb" response-type="arraybuffer"></a-assets-item>
+
+                <!-- rest of these models should have 2 maps per texture. the other 3 would cause many bugs with the lighting system of a-frame. -->
+                <a-assets-item id="cig_model" src="models/cigarette.glb" response-type="arraybuffer"></a-assets-item>
+                <a-assets-item id="map_model" src="models/worldMapWithDecorations.glb" response-type="arraybuffer"></a-assets-item>
+                <a-assets-item id="flwr_model" src="models/flowers.glb" response-type="arraybuffer"></a-assets-item>
+                <a-assets-item id="rock_model" src="models/rock.glb" response-type="arraybuffer"></a-assets-item>
+                
+                <!-- images -->
+                <img id="water_texture" src="textures/water-texture.jpg" response-type="arraybuffer">
+                <img id="dogs_poker" src="textures/dogs.jpg" response-type="arraybuffer">
+                <img id="wall_texture" src="textures/wall.jpg" response-type="arraybuffer">
+                <img id="sky_map" src="textures/marioSky.jpg" response-type="arraybuffer">
+                
+                <a-entity 
+                    id="music" 
+                    sound="src: music/Sanctuary_Elder.mp3; autoplay: false; loop: true;">
+                </a-entity>
+            </a-assets>
+            <!--Remember position data for sword-->
+            
+            <a-entity id="world" position="0 0 -57">
+                <a-entity text="font: mozillavr; value:.     Warning!\n .    Use in case of\n .     intoxication." position="0.735 -0.178 0.634" rotation="-50.145 0 2.222" scale="2.362 2.362 2.362"></a-entity>
+
+                <!-- Fake rock -->
+                <a-entity id="DONT_USE_THIS_ID" gltf-model="#rock_model" position="0 -.1 0" ></a-entity>
+                <!-- Decorative rocks -->
+                <a-entity id="DONT_USE_THIS_ID" gltf-model="#rock_model" position="0 -1.15 -13" rotation="0 0 0" scale="8 8 8"></a-entity>
+                <a-entity id="DONT_USE_THIS_ID" gltf-model="#rock_model" position="12 -1.15 0" rotation="0 -90 0" scale="8 8 8"></a-entity>
+                <a-entity id="DONT_USE_THIS_ID" gltf-model="#rock_model" position="-12 -1.15 0" rotation="0 90 0" scale="8 8 8"></a-entity>
+
+                <!-- BIG ROCK -->
+                <a-entity id="big_rock" position="-4.430 -1 8.027" rotation="0 -160.432 0">
+                    <a-entity id="DONT_USE_THIS_ID" gltf-model="#rock_model" position="-1.08 0 -0.117" rotation="0 -70.26 0" scale="8.551 8 10.813"></a-entity>
+                    <a-entity id="DONT_USE_THIS_ID" gltf-model="#rock_model" position="0 0 -1.642" rotation="0 179.1 0" scale="8 9.224 10.829"></a-entity>
+                    <a-entity id="DONT_USE_THIS_ID" gltf-model="#rock_model" position="0.990 0 -0.752" rotation="0 87.92 0" scale="9.030 9.030 9.030"></a-entity>
+                    <a-entity id="DONT_USE_THIS_ID" gltf-model="#rock_model" position="0.369 0 0.135" rotation="0 0 0" scale="9.736 9.736 9.736"></a-entity>
+                    <a-entity id="DONT_USE_THIS_ID" gltf-model="#rock_model" position="-.08 0.350 -.712" rotation="-22.885 0 26.153" scale="8.289 7.586 8.289"></a-entity>
+                </a-entity>
+
+
+
+                <!-- Decorative Flowers-->
+                <a-entity id="flowerPatch" position="0 0 0" rotation="0 0 0">
+                    <a-entity id="DONT_USE_THIS_ID" gltf-model="#flwr_model" position="-5.01 -0.9 -2.075" scale="8 8 8"></a-entity>
+                    <a-entity id="DONT_USE_THIS_ID" gltf-model="#flwr_model" position="5.01 -0.9 -2.075" scale="8 8 8"></a-entity>
+                    <a-entity id="DONT_USE_THIS_ID" gltf-model="#flwr_model" position="2.085 -0.9 5.03" scale="8 8 8"></a-entity>
+                </a-entity>
+
+                <!-- Mainland decorations -->
+                 <!-- left patch-->
+                <a-entity id="DONT_USE_THIS_ID" gltf-model="#flwr_model" position="-9 -1.1 50" scale="13 13 13"></a-entity>
+
+                <!-- right patch (big)-->
+                <a-entity id="DONT_USE_THIS_ID" gltf-model="#flwr_model" position="14 -.9 48" scale="10 10 10"></a-entity>
+                <a-entity id="flowerPatch2" position="14 0 48" rotation="0 90 0" scale="1.2 1.2 1.2">
+                    <a-entity id="DONT_USE_THIS_ID" gltf-model="#flwr_model" position="-5.01 -0.9 -2.075" scale="8 8 8"></a-entity>
+                    <a-entity id="DONT_USE_THIS_ID" gltf-model="#flwr_model" position="5.01 -0.9 -2.075" scale="8 8 8"></a-entity>
+                    <a-entity id="DONT_USE_THIS_ID" gltf-model="#flwr_model" position="2.085 -0.9 5.03" scale="8 8 8"></a-entity>
+                </a-entity>
+
+                <!--Big patch-->
+                <a-entity id="big_rock" position="6 -1.1 53" rotation="0 65 0">
+                    <a-entity id="DONT_USE_THIS_ID" gltf-model="#rock_model" position="-1.08 0 -0.117" rotation="0 -70.26 0" scale="8.551 8 10.813"></a-entity>
+                    <a-entity id="DONT_USE_THIS_ID" gltf-model="#rock_model" position="0 0 -1.642" rotation="0 179.1 0" scale="8 9.224 10.829"></a-entity>
+                    <a-entity id="DONT_USE_THIS_ID" gltf-model="#rock_model" position="0.990 0 -0.752" rotation="0 87.92 0" scale="9.030 9.030 9.030"></a-entity>
+                    <a-entity id="DONT_USE_THIS_ID" gltf-model="#rock_model" position="0.369 0 0.135" rotation="0 0 0" scale="9.736 9.736 9.736"></a-entity>
+                    <a-entity id="DONT_USE_THIS_ID" gltf-model="#rock_model" position="-.08 0.350 -.712" rotation="-22.885 0 26.153" scale="8.289 7.586 8.289"></a-entity>
+                </a-entity>
+
+                <!--world-->
+                <a-entity id="worldMap" gltf-model="#map_model"  position="0 -1 0" rotation="0 180 0" scale="8 8 8"></a-entity>
+            </a-entity>
+            <!-- When the player picks up the sword, all transformations for the sword need to be set to zero-->
+            <a-entity id="HellYeahSword" pickupable gltf-model="#HYS_model" position="0 1 -57" rotation="180 0 0" scale="8 8 8" circles-env-map="src:#sky_map;"></a-entity>
+            
+            <!-- look controls dont work anymore -->
+            <a-entity id="camera" camera wasd-controls look-controls position="0 2 0" cursor="fuse:false; rayOrigin:mouse;" raycaster="far:20; interval:300; objects:.interactive">
+                <a-entity id="cig" gltf-model="#cig_model" position="20 20 20" rotation="180 0 0" scale="8 8 8"></a-entity>
+            </a-entity>
+            <!-- player -->
+            <a-entity id="playerBody" position="0 -1 0" movement-mechanics>
+                <a-sphere id="leftHand" radius="0.15"position="-1 1.5 -1" material="color:skyblue"></a-sphere>
+                <a-sphere position="0 1.5 0" radius="0.5"></a-sphere>
+                <a-cylinder position="0 .75 0" radius=".5" height="1.5"></a-cylinder>
+                <a-sphere position="0 0 0" radius=".5"></a-sphere>
+            </a-entity>
+            
+            
+            <a-entity id="sceneRoot"></a-entity>
+
+            
+            <!-- paintings -->
+            <a-entity geometry="primitive: plane; height: 60; width:60;" position="0 0 7" rotation="180 0 0" material="src:#wall_texture;" ></a-entity>
+            <a-entity geometry="primitive: plane; height: 20; width:30;" position="0 12 6.8" rotation="180 0 180" material="src:#dogs_poker;" ></a-entity> 
+            
+            <!-- This grid is to ensure a scrolling texture, if water tiles pass the border they get teleported back to the opposite side of the board -->
+            <a-entity id="waterGrid" >
+                <a-entity id="water0" geometry="primitive: plane; height: 150; width:150;" position="150 -8 150" rotation="-90 0 0" material="src:#water_texture;" ></a-entity>
+                <a-entity id="water1" geometry="primitive: plane; height: 150; width:150;" position="150 -8 0" rotation="-90 0 0" material="src:#water_texture;" ></a-entity>
+                <a-entity id="water2" geometry="primitive: plane; height: 150; width:150;" position="150 -8 -150" rotation="-90 0 0" material="src:#water_texture;" ></a-entity>
+                
+                <a-entity id="water3" geometry="primitive: plane; height: 150; width:150;" position="0 -8 150" rotation="-90 0 0" material="src:#water_texture;" ></a-entity>
+                <a-entity id="water4" geometry="primitive: plane; height: 150; width:150;" position="0 -8 0" rotation="-90 0 0" material="src:#water_texture;" ></a-entity>
+                <a-entity id="water5" geometry="primitive: plane; height: 150; width:150;" position="0 -8 -150" rotation="-90 0 0" material="src:#water_texture;" ></a-entity>
+                
+                <a-entity id="water6" geometry="primitive: plane; height: 150; width:150;" position="-150 -8 150" rotation="-90 0 0" material="src:#water_texture;" ></a-entity>
+                <a-entity id="water7" geometry="primitive: plane; height: 150; width:150;" position="-150 -8 0" rotation="-90 0 0" material="src:#water_texture;" ></a-entity>
+                <a-entity id="water8" geometry="primitive: plane; height: 150; width:150;" position="-150 -8 -150" rotation="-90 0 0" material="src:#water_texture;" ></a-entity>
+            </a-entity>            
+
+
+            
+
+
+            <a-entity id="skybox" geometry="primitive:box; height:400; width:400; depth:400;" material="src:#sky_map; side:back; shader:flat;"></a-entity>
+        </a-scene>
+    </body>
+    <script>
+        "use strict";
+        let inventoryMode = false;
+        var musicEntity = document.querySelector("#music");
+        let cig_count = 0;
+
+        
+        function spawnCigarette(relativePosition) {
+        const originalCig = document.querySelector("#cig");  // Get the original model
+        const newCig = originalCig.cloneNode(true);          // Clone it
+
+        // Set a new ID (optional, to avoid duplicate IDs)
+        newCig.id = "cig" + Math.random().toString(36).substr(2, 5);
+
+        // Set a new relative position (relative to the parent)
+        newCig.setAttribute("position", relativePosition);
+        
+        newCig.setAttribute("rotation", "0 -20 180");
+        
+
+        // Append to the parent entity instead of the scene
+        document.querySelector("#camera").appendChild(newCig);
+    }
+
+
+        AFRAME.registerComponent('pickupable', {
+          init: function() {
+            var self = this;
+            self.player = document.querySelector('#camera');  //this is our player/camera
+            self.pickedUp = false;
+            let busyHand = playerBody.querySelector('#leftHand');
+            const worldPosition = new THREE.Vector3();
+
+            if (!self.el.classList.contains('interactive')) {
+              self.el.classList.add('interactive'); 
+            }
+  
+            self.el.addEventListener('click', (e) => {
+                console.log(inventoryMode);
+                //when players pick up the sword music starts playing, paused if dropped
+                //this just binds the sword to the player's hand
+                if (self.pickedUp === true && inventoryMode === false) {
+                    musicEntity.components.sound.pauseSound(); 
+                    //release
+                    self.el.sceneEl.object3D.attach(self.el.object3D);
+                    self.pickedUp = false;
+                }
+                else if (self.pickedUp === false && inventoryMode === false){
+                    musicEntity.components.sound.playSound();
+                    //finds the world position of the hand teleports the sword to that location
+                    busyHand.object3D.getWorldPosition(worldPosition)
+                    self.el.object3D.position.copy(worldPosition);
+
+                    self.player.object3D.attach(self.el.object3D);
+                    self.el.setAttribute("rotation", "0 180 0");
+                    //cast ray from player pov this is the target location of the sword
+                    self.pickedUp = true;
+  
+                }
+                else if (self.pickedUp === true && inventoryMode === true){
+                    spawnCigarette(".1 -.2 -.3");
+                    console.log("cig spawned")
+                    cig_count++;
+                }
+            });
+            
+            //Inventory mode for sword.
+            //when player is holding sword and pressing shift the inventory can be accessed
+            addEventListener('keydown', (e) => {
+                if (self.pickedUp === true && e.key === "Shift") {
+                    self.el.setAttribute("rotation", "180 0 -90");
+                    self.el.setAttribute("position", " -1 -.5 -1 ")
+                    
+                    inventoryMode = true;
+                }
+            });
+            addEventListener('keyup', (e) => {
+                if (self.pickedUp === true && e.key === "Shift") {
+                    self.el.setAttribute("rotation", "0 180 0");
+                    self.el.setAttribute("position", " -.7 -.8 -1 ")
+                    
+                    inventoryMode = false;
+                }
+            });
+            //some visualuzation of interactivity as hover effects
+            self.el.addEventListener('mouseenter', (e) => {
+            });
+  
+            self.el.addEventListener('mouseleave', (e) => {
+            });
+          }
+        });
+  
+        AFRAME.registerComponent("startup", {
+          schema: {},
+          multiple: false,
+          init: function() {
+            console.log("start ing up");
+          }
+        });
+      </script>
+</html>
